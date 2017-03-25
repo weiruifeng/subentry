@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>变化树</title>
+    <style>
+        .trunk, .trunk div {
+            background-color: #136086;
+            width: 100px;
+            height: 10px;
+            position: absolute;
+            left:50%;
+            top:70%;
+            margin-left: -10px;
+            transition: background 1.5s;
+            /*规定需要绑定到选择器的 keyframe 名称*/
+            animation-name: rot;
+            /*规定完成动画所花费的时间，以秒或毫秒计。*/
+            animation-duration: 2.02s;
+            /*规定动画应该播放的次数。*/
+            animation-iteration-count: infinite;
+            /*规定是否应该轮流反向播放动画*/
+            animation-direction: alternate;
+            transform-origin: 5px 5px;
+            /*规定动画的速度曲线*/
+            animation-timing-function: ease-in-out;
+
+        }
+        .trunk {
+            animation-name: rot-root;
+            animation-duration: 2.5s;
+        }
+        .trunk > div, .trunk div > div {
+            top: 0;
+            left: 100px;
+        }
+        .trunk > div:nth-child(2), .trunk div > div:nth-child(2) {
+            animation-name: rot-inv;
+            animation-duration: 1.7s;
+        }
+        @keyframes rot {
+            from {
+                transform: rotate(10deg) scale(0.72);
+            }
+            to {
+                transform: rotate(50deg) scale(0.72);
+            }
+        }
+        @keyframes rot-inv {
+            from {
+                transform: rotate(-45deg) scale(0.72);
+            }
+            to {
+                transform: rotate(-15deg) scale(0.72);
+            }
+        }
+        @keyframes rot-root {
+            from {
+                transform: rotate(-95deg);
+            }
+            to {
+                transform: rotate(-85deg);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="trunk" id="trunk"></div>
+<script>
+    /**
+     * 生成二叉树
+     * @param num
+     * @param initDiv
+     * @returns {*}
+     */
+    function binaryTree(num,initDiv) {
+        if(num) {
+            var div = '<div></div>';
+            if(initDiv) {
+                div = '<div>' + initDiv + initDiv + '</div>';
+            }
+            return arguments.callee(--num,div);
+        }
+        return initDiv;
+    }
+    /**
+     * 根据数的深度创建二叉树
+     * @param num
+     */
+    function createHeightTree(num) {
+        num = (num > 10) ? 10 : (num <= 0 ? 1 : num);
+        document.getElementById('trunk').innerHTML = binaryTree(num) + binaryTree(num);
+    }
+    /**
+     * 随机变换颜色
+     * @returns {string}
+     */
+    function color() {
+        return '#' + 'xxxxxx'.replace(/[x]/g,function() {
+                    var r = Math.random() * 16 | 0;
+                    return r.toString(16);
+                }).toUpperCase();
+    }
+
+    /**
+     * 改变树的颜色
+     */
+    function changeColor() {
+        var divColor = color();
+        for (var i = 0; i <  document.getElementsByTagName('div').length; i++) {
+            document.getElementsByTagName('div')[i].style.backgroundColor = divColor;
+        }
+    }
+
+    createHeightTree(7);
+    setInterval(changeColor,4000);
+</script>
+</body>
+</html>
